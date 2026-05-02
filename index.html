@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Disforge | Yeni Nesil Mesajlaşma - Beta APK İndir</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: #a78bfa;
+            --bg: #08090f;
+            --surface: rgba(18, 20, 35, 0.85);
+            --text: #f1f0ff;
+            --text-dim: #9b9bb8;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            cursor: default;
+        }
+
+        /* Arka plan animasyon katmanları */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.35;
+            animation: orbFloat 25s infinite alternate ease-in-out;
+        }
+        .glow-orb.purple { width: 700px; height: 700px; background: #7c3aed; top: -200px; left: -150px; }
+        .glow-orb.pink { width: 600px; height: 600px; background: #a855f7; bottom: -200px; right: -100px; animation-duration: 28s; }
+        .glow-orb.indigo { width: 500px; height: 500px; background: #4f46e5; top: 60%; left: 60%; animation-duration: 22s; }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0,0) scale(1); }
+            100% { transform: translate(40px, -40px) scale(1.1); }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: floatUp 10s infinite ease-in;
+            opacity: 0;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.25; }
+            90% { opacity: 0.15; }
+            100% { transform: translateY(-10vh) scale(1.3); opacity: 0; }
+        }
+
+        /* fare imleci efekti */
+        .cursor-fx {
+            position: fixed;
+            width: 25px; height: 25px;
+            border: 2px solid rgba(168, 133, 247, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            backdrop-filter: blur(2px);
+        }
+        .cursor-fx.active {
+            width: 50px; height: 50px;
+            background: rgba(168, 133, 247, 0.2);
+            border-color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Navigasyon */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeInDown 1s both;
+        }
+        .logo i {
+            font-size: 2.4rem;
+            color: var(--primary-glow);
+            filter: drop-shadow(0 0 14px var(--primary));
+            animation: pulse 2.5s infinite;
+        }
+        @keyframes pulse {
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #c0b0f0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            position: relative;
+        }
+        .nav-links a:hover {
+            color: white;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-glow);
+            transition: 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        .btn-small {
+            background: var(--primary);
+            border: none;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 20px rgba(139,92,246,0.5);
+        }
+        .btn-small:hover {
+            background: #7c3aed;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #a78bfa;
+        }
+
+        /* Hero */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            min-height: 90vh;
+            padding: 30px 0 60px;
+            flex-wrap: wrap;
+        }
+        .hero-text {
+            flex: 1 1 450px;
+            animation: fadeInUp 1s both;
+        }
+        .hero-text h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #e9d5ff, #c4b5fd, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: textGlow 3s infinite alternate;
+        }
+        @keyframes textGlow {
+            0% { filter: drop-shadow(0 0 8px #7c3aed); }
+            100% { filter: drop-shadow(0 0 22px #c084fc); }
+        }
+        .hero-text p {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            margin: 24px 0 30px;
+            max-width: 500px;
+        }
+        .download-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            margin-top: 24px;
+        }
+        .btn-download {
+            background: white;
+            color: #1e1b4b;
+            padding: 16px 32px;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            border: 2px solid transparent;
+            animation: shakeBtn 5s infinite ease-in-out;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .btn-download i {
+            font-size: 2rem;
+        }
+        .btn-download.beta {
+            background: var(--primary);
+            color: white;
+            border: 2px solid #c084fc;
+            box-shadow: 0 0 35px rgba(139,92,246,0.7);
+            animation: betaPulse 1.5s infinite, shakeBtn 5s infinite;
+        }
+        @keyframes betaPulse {
+            0% { box-shadow: 0 0 15px #8b5cf6; }
+            50% { box-shadow: 0 0 45px #c084fc, 0 0 80px #7c3aed; }
+            100% { box-shadow: 0 0 15px #8b5cf6; }
+        }
+        .btn-download.normal {
+            background: #2e2e3a;
+            color: #b0b0cc;
+            border: 2px dashed #6d6d8a;
+            pointer-events: none;
+            position: relative;
+        }
+        .btn-download.normal .soon-badge {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            background: #f59e0b;
+            color: black;
+            font-size: 0.7rem;
+            font-weight: 900;
+            padding: 5px 12px;
+            border-radius: 20px;
+            animation: bounceBadge 1s infinite;
+        }
+        @keyframes bounceBadge {
+            0%,100%{ transform: translateY(0); }
+            50%{ transform: translateY(-6px); }
+        }
+        @keyframes shakeBtn {
+            0%,100%{ transform: translateX(0); }
+            2%{ transform: translateX(-2px); }
+            4%{ transform: translateX(2px); }
+            6%{ transform: translateX(-1px); }
+            8%{ transform: translateX(1px); }
+            10%{ transform: translateX(0); }
+        }
+
+        .hero-mockup {
+            flex: 0 0 380px;
+            animation: floatPhone 6s infinite ease-in-out;
+            perspective: 1000px;
+        }
+        .phone-3d {
+            width: 100%;
+            filter: drop-shadow(0 30px 40px #4c1d95);
+            animation: rotate3D 8s infinite ease-in-out;
+        }
+        @keyframes floatPhone {
+            0%,100%{ transform: translateY(0); }
+            50%{ transform: translateY(-18px); }
+        }
+        @keyframes rotate3D {
+            0%{ transform: perspective(800px) rotateY(-6deg); }
+            50%{ transform: perspective(800px) rotateY(6deg); }
+            100%{ transform: perspective(800px) rotateY(-6deg); }
+        }
+
+        /* İstatistikler */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 60px 0;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+            animation: fadeInUp 1s both;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #c084fc, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-label {
+            color: #b0b0cc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Özellikler */
+        .features {
+            margin: 100px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 35px;
+        }
+        .feature-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 36px;
+            padding: 40px 28px;
+            text-align: center;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.8s forwards paused;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card.visible {
+            animation-play-state: running;
+        }
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.25s; }
+        .feature-card:nth-child(3) { animation-delay: 0.4s; }
+        .feature-card:nth-child(4) { animation-delay: 0.55s; }
+
+        .feature-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: var(--primary-glow);
+            box-shadow: 0 30px 45px -15px rgba(139,92,246,0.4);
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(168,133,247,0.2), transparent, transparent);
+            animation: rotateBg 10s linear infinite;
+            z-index: 0;
+            opacity: 0;
+            transition: 0.5s;
+        }
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        @keyframes rotateBg {
+            100% { transform: rotate(360deg); }
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: #c084fc;
+            margin-bottom: 22px;
+            animation: iconPop 2s infinite;
+            position: relative;
+            z-index: 1;
+        }
+        .feature-card h3, .feature-card p {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Ekran görüntüleri */
+        .screenshots {
+            margin: 100px 0;
+        }
+        .screenshots h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 50px;
+            background: linear-gradient(to right, #e9d5ff, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .screen-slider {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding: 20px 0 40px;
+            scroll-snap-type: x mandatory;
+        }
+        .screen-item {
+            flex: 0 0 250px;
+            scroll-snap-align: center;
+            background: rgba(30,30,50,0.7);
+            border-radius: 40px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.4s;
+            animation: fadeInUp 0.8s both;
+        }
+        .screen-item:hover {
+            transform: scale(1.05);
+            border-color: #a78bfa;
+        }
+
+        /* Yorumlar */
+        .testimonials {
+            margin: 100px 0;
+        }
+        .testimonial-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border-radius: 36px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: 0.3s;
+            text-align: center;
+        }
+        .testimonial-card i {
+            color: #f59e0b;
+            margin-bottom: 15px;
+        }
+
+        /* Geri sayım */
+        .countdown-section {
+            text-align: center;
+            margin: 80px 0;
+            padding: 50px 20px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 70px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        .time-box {
+            background: rgba(139,92,246,0.15);
+            padding: 18px 24px;
+            border-radius: 24px;
+            min-width: 90px;
+            border: 1px solid #7c3aed;
+            box-shadow: 0 0 25px rgba(139,92,246,0.3);
+            animation: pulse 2s infinite;
+        }
+        .time-box span {
+            display: block;
+            font-size: 0.9rem;
+            color: #b0b0cc;
+            margin-top: 5px;
+        }
+
+        /* SSS */
+        .faq {
+            margin: 100px 0;
+        }
+        .faq h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 50px;
+            background: linear-gradient(to right, #e9d5ff, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .faq-item {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 28px;
+            margin-bottom: 18px;
+            padding: 0 28px;
+            transition: 0.3s;
+        }
+        .faq-question {
+            padding: 22px 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            color: #c0c0d0;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-bottom: 22px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: #6b6b80;
+        }
+
+        /* MODAL - 3D Yükleme */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.4s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-box {
+            background: rgba(20,20,40,0.9);
+            border: 1px solid #8b5cf6;
+            border-radius: 40px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 0 60px #8b5cf6;
+            animation: scaleIn 0.3s ease;
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+        .loader-3d {
+            perspective: 600px;
+            margin: 30px auto;
+        }
+        .cube {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: spinCube 2s infinite linear;
+        }
+        .cube div {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid #c084fc;
+            border-radius: 12px;
+            box-shadow: 0 0 25px #8b5cf6;
+        }
+        .front  { transform: translateZ(40px); }
+        .back   { transform: rotateY(180deg) translateZ(40px); }
+        .right  { transform: rotateY(90deg) translateZ(40px); }
+        .left   { transform: rotateY(-90deg) translateZ(40px); }
+        .top    { transform: rotateX(90deg) translateZ(40px); }
+        .bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+        @keyframes spinCube {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="glow-orb purple"></div>
+        <div class="glow-orb pink"></div>
+        <div class="glow-orb indigo"></div>
+    </div>
+    <div class="particles" id="particlesContainer"></div>
+    <div class="cursor-fx" id="cursorFx"></div>
+
+    <!-- 3D Yükleme Modalı -->
+    <div class="modal-overlay" id="loadingModal">
+        <div class="modal-box">
+            <h2 style="color:white;">🚀 İndirme Başlatılıyor</h2>
+            <div class="loader-3d">
+                <div class="cube">
+                    <div class="front"></div><div class="back"></div>
+                    <div class="right"></div><div class="left"></div>
+                    <div class="top"></div><div class="bottom"></div>
+                </div>
+            </div>
+            <p style="color:#b0b0cc;">APK hazırlanıyor, lütfen bekleyin...</p>
+            <div style="margin-top:20px; height:6px; background:#2e2e3a; border-radius:10px; overflow:hidden;">
+                <div style="width:0%; height:100%; background:linear-gradient(90deg, #8b5cf6, #c084fc); animation: loadBar 2s forwards;"></div>
+            </div>
+            @keyframes loadBar { 100% { width: 100%; } }
+        </div>
+    </div>
+
+    <div class="container">
+        <nav>
+            <div class="logo"><i class="fas fa-comment-dots"></i> Disforge</div>
+            <div class="nav-links">
+                <a href="#">Ana Sayfa</a>
+                <a href="#features">Özellikler</a>
+                <a href="#screenshots">Ekranlar</a>
+                <a href="#download">İndir</a>
+                <a href="#" class="btn-small"><i class="fas fa-download"></i> Beta APK</a>
+            </div>
+        </nav>
+
+        <div class="hero">
+            <div class="hero-text">
+                <h1>Mesajlaşma<br>yeniden doğuyor.</h1>
+                <p>Disforge ile ışık hızında, uçtan uca şifreli ve inanılmaz eğlenceli sohbetler seni bekliyor. Beta sürümü hemen cebinde!</p>
+                <div class="download-group">
+                    <a class="btn-download beta" id="betaDownloadBtn">
+                        <i class="fab fa-android"></i>
+                        <span><small>Beta Sürüm</small><br><strong>APK İndir</strong></span>
+                    </a>
+                    <div class="btn-download normal" id="normalDownloadBtn">
+                        <i class="fas fa-clock"></i>
+                        <span><small>Normal Sürüm</small><br><strong>Yakında</strong></span>
+                        <span class="soon-badge">Çok Yakında</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-mockup">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='600' rx='45' fill='%23111827' stroke='url(%23g)' stroke-width='5'/%3E%3Ccircle cx='150' cy='38' r='16' fill='%2323233a'/%3E%3Crect x='75' y='85' width='150' height='22' rx='11' fill='%23433b5e'/%3E%3Ccircle cx='110' cy='150' r='38' fill='%237c3aed'/%3E%3Crect x='55' y='215' width='190' height='14' rx='7' fill='%233f3760'/%3E%3Crect x='75' y='245' width='150' height='10' rx='5' fill='%233f3760'/%3E%3Crect x='55' y='295' width='190' height='14' rx='7' fill='%233f3760'/%3E%3Crect x='75' y='325' width='130' height='10' rx='5' fill='%233f3760'/%3E%3Ccircle cx='55' cy='420' r='28' fill='%23a78bfa'/%3E%3Crect x='95' y='405' width='150' height='12' rx='6' fill='%23433b5e'/%3E%3C/svg%3E" alt="Disforge arayüzü" class="phone-3d">
+            </div>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="statDownloads">0</div>
+                <div class="stat-label">İndirme</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">Aktif Kullanıcı</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4.9</div>
+                <div class="stat-label">⭐ Puan</div>
+            </div>
+        </div>
+
+        <div id="features" class="features">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-shield-haltered"></i></div>
+                <h3>Uçtan Uca Şifreli</h3>
+                <p>Mesajlarınız yalnızca siz ve alıcı tarafından okunabilir.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Işık Hızında</h3>
+                <p>Anlık teslimat, hiç gecikme yok.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-face-laugh-wink"></i></div>
+                <h3>Hareketli Çıkartmalar</h3>
+                <p>Sohbeti canlandıran yüzlerce animasyonlu ifade.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-moon"></i></div>
+                <h3>Karanlık Mod</h3>
+                <p>Göz yormayan şık karanlık tema her yerde.</p>
+            </div>
+        </div>
+
+        <div id="screenshots" class="screenshots">
+            <h2>Ekran Görüntüleri</h2>
+            <div class="screen-slider">
+                <div class="screen-item"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='350'%3E%3Crect width='200' height='350' rx='25' fill='%23111'/%3E%3Ccircle cx='100' cy='100' r='40' fill='%238b5cf6'/%3E%3C/svg%3E" alt="Sohbet"></div>
+                <div class="screen-item"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='350'%3E%3Crect width='200' height='350' rx='25' fill='%23111'/%3E%3Ccircle cx='60' cy='120' r='25' fill='%23a78bfa'/%3E%3C/svg%3E" alt="Kişiler"></div>
+                <div class="screen-item"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='350'%3E%3Crect width='200' height='350' rx='25' fill='%23111'/%3E%3Crect x='30' y='200' width='140' height='40' rx='20' fill='%237c3aed'/%3E%3C/svg%3E" alt="Arama"></div>
+            </div>
+        </div>
+
+        <!-- Kullanıcı Yorumları -->
+        <div class="testimonials">
+            <h2 style="text-align:center; font-size:2.8rem; background:linear-gradient(to right, #e9d5ff, #c084fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Kullanıcılar Ne Diyor?</h2>
+            <div class="testimonial-card">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <p>"Disforge beta inanılmaz hızlı! Arkadaşlarımla sohbet keyfim arttı."</p>
+                <strong>- Ayşe Y.</strong>
+            </div>
+            <div class="testimonial-card">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <p>"Arayüz çok modern, çıkartmalar efsane. Normal sürümü sabırsızlıkla bekliyorum."</p>
+                <strong>- Emre K.</strong>
+            </div>
+        </div>
+
+        <div id="download" class="countdown-section">
+            <h2 style="font-size:2.4rem; color:white;">Normal Sürüm için Geri Sayım</h2>
+            <div class="countdown-timer" id="countdown">
+                <div class="time-box"><span id="days">07</span><span>Gün</span></div>
+                <div class="time-box"><span id="hours">14</span><span>Saat</span></div>
+                <div class="time-box"><span id="minutes">22</span><span>Dakika</span></div>
+                <div class="time-box"><span id="seconds">58</span><span>Saniye</span></div>
+            </div>
+            <p>Beta sürümü hemen indir, normal sürüm çıktığında bildirim al.</p>
+            <div style="margin-top:25px; display:flex; gap:15px; justify-content:center; flex-wrap:wrap;">
+                <a class="btn-download beta" id="betaDownloadBtn2"><i class="fab fa-android"></i> Beta APK İndir</a>
+                <a class="btn-download normal" style="pointer-events:auto; background:#1f1f2e; color:#ccc;" id="notifyBtn"><i class="far fa-bell"></i> Çıkınca Haber Ver</a>
+            </div>
+        </div>
+
+        <div class="faq">
+            <h2>Sıkça Sorulanlar</h2>
+            <div class="faq-item">
+                <div class="faq-question">Disforge ücretsiz mi? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Evet, tamamen ücretsiz ve reklamsız bir mesajlaşma deneyimi sunuyoruz.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Beta APK güvenli mi? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Kesinlikle. APK dosyamız GitHub üzerinden imzalı olarak dağıtılmaktadır.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Normal sürüm ne zaman? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Geri sayımın sonunda! Çok yakında tüm özelliklerle yayında.</div>
+            </div>
+        </div>
+
+        <footer>
+            © 2025 Disforge. <i class="fas fa-heart" style="color:#a78bfa;"></i> ile geliştirildi.
+        </footer>
+    </div>
+
+    <script>
+        // Parçacıklar
+        const pc = document.getElementById('particlesContainer');
+        for (let i=0; i<45; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.width = p.style.height = (Math.random()*5+2)+'px';
+            p.style.left = Math.random()*100+'%';
+            p.style.animationDelay = Math.random()*12+'s';
+            p.style.animationDuration = Math.random()*8+8+'s';
+            pc.appendChild(p);
+        }
+
+        // Fare imleci efekti
+        const cursor = document.getElementById('cursorFx');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        document.querySelectorAll('a, button, .btn-download, .faq-question').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+        });
+
+        // Scroll animasyonları
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+        }, {threshold:0.3});
+        document.querySelectorAll('.feature-card').forEach(c => observer.observe(c));
+
+        // SSS
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => q.parentElement.classList.toggle('active'));
+        });
+
+        // Geri sayım
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + 7);
+        function updateCountdown() {
+            const now = Date.now();
+            const dist = targetDate - now;
+            if(dist < 0) {
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                return;
+            }
+            const d = Math.floor(dist/(1000*60*60*24));
+            const h = Math.floor((dist%(1000*60*60*24))/(1000*60*60));
+            const m = Math.floor((dist%(1000*60*60))/(1000*60));
+            const s = Math.floor((dist%(1000*60))/1000);
+            document.getElementById('days').textContent = String(d).padStart(2,'0');
+            document.getElementById('hours').textContent = String(h).padStart(2,'0');
+            document.getElementById('minutes').textContent = String(m).padStart(2,'0');
+            document.getElementById('seconds').textContent = String(s).padStart(2,'0');
+        }
+        setInterval(updateCountdown,1000);
+        updateCountdown();
+
+        // APK indirme linki
+        const APK_URL = "https://github.com/OxygenForge-code/DisForge/releases/download/Beta/Disforge_beta_1.0_sign.apk";
+
+        // İndirme modalını aç ve belirli süre sonra yönlendir
+        function startDownload() {
+            const modal = document.getElementById('loadingModal');
+            modal.classList.add('active');
+            // 2.2 saniye sonra yönlendir (yükleme çubuğu animasyonu 2s)
+            setTimeout(() => {
+                window.location.href = APK_URL;
+                // Modalı kapatmak gerekmez çünkü sayfa yönleniyor.
+            }, 2200);
+        }
+
+        // Beta butonlarına tıklandığında
+        document.getElementById('betaDownloadBtn').addEventListener('click', startDownload);
+        document.getElementById('betaDownloadBtn2').addEventListener('click', startDownload);
+
+        // Haber ver butonu
+        document.getElementById('notifyBtn').addEventListener('click', () => {
+            const email = prompt('Normal sürüm çıkınca haber almak için e-posta adresinizi girin:');
+            if(email) alert('📬 Teşekkürler! '+email+' adresine bildirim göndereceğiz.');
+        });
+
+        // İstatistik sayacı animasyonu (indirme sayısı)
+        const statDownload = document.getElementById('statDownloads');
+        let count = 0;
+        const targetCount = 12453;
+        const duration = 2000;
+        const step = targetCount / (duration / 15);
+        const counterInterval = setInterval(() => {
+            count += step;
+            if(count >= targetCount) {
+                statDownload.textContent = targetCount.toLocaleString() + '+';
+                clearInterval(counterInterval);
+            } else {
+                statDownload.textContent = Math.floor(count).toLocaleString();
+            }
+        }, 15);
+    </script>
+</body>
+</html>
